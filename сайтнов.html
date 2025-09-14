@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Портфолио George Karin: музыка, творчество и кинематографические проекты.">
+<meta name="keywords" content="George Karin, музыка, творчество, кино, портфолио">
+<meta name="author" content="George Karin">
+<title>George Karin - Творчество без границ</title>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="favicon.png" type="image/png">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+font-family: 'Arial', sans-serif;
+line-height: 1.6;
+color: #fff;
+overflow-x: hidden;
+}
+
+.container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 0 20px;
+width: 100%;
+height: auto; /* Автоматическая высота */
+}
+
+/* Фон */
+.bg-animated {
+position: fixed;
+top: 0; left: 0;
+width: 100%; height: 100%;
+background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533a7b);
+background-size: 400% 400%;
+animation: gradientShift 15s ease infinite;
+z-index: -2;
+will-change: background-position;
+}
+@keyframes gradientShift {
+0% { background-position: 0% 50%; }
+50% { background-position: 100% 50%; }
+100% { background-position: 0% 50%; }
+}
+
+/* Sparkles */
+.sparkle {
+position: fixed;
+background: white;
+border-radius: 50%;
+opacity: 0.8;
+pointer-events: none;
+animation: floatUp linear infinite;
+z-index: -1;
+}
+@keyframes floatUp {
+from { transform: translateY(100vh) scale(0.5); opacity: 0.8; }
+to { transform: translateY(-10vh) scale(1); opacity: 0; }
+}
+
+/* Навигация */
+nav {
+position: fixed; top: 0; width: 100%;
+padding: 20px 0;
+background: rgba(0,0,0,0.8);
+backdrop-filter: blur(10px);
+z-index: 1000;
+}
+nav .container { display: flex; justify-content: space-between; align-items: center; }
+.logo {
+font-size: 2em; font-weight: bold;
+background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+.nav-links { display: flex; list-style: none; gap: 30px; }
+.nav-links a {
+color: #fff; text-decoration: none; transition: all 0.3s ease; position: relative;
+}
+.nav-links a:hover { color: #4ecdc4; }
+.nav-links a::after {
+content: ''; position: absolute; width: 0; height: 2px;
+bottom: -5px; left: 0;
+background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+transition: width 0.3s ease;
+}
+.nav-links a:hover::after { width: 100%; }
+.burger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+.burger div { width: 25px; height: 3px; background: #fff; border-radius: 5px; }
+
+/* Hero */
+.hero {
+min-height: 100vh; /* Минимальная высота экрана */
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+position: relative;
+overflow-y: auto; /* Прокрутка для длинного контента */
+}
+
+.hero-content {
+width: 100%;
+max-width: 800px; /* Ограничение ширины контента */
+padding: 20px;
+}
+
+.hero-content h1 {
+font-size: 4em; margin-bottom: 20px; opacity: 0;
+animation: fadeInUp 1s ease forwards;
+}
+.hero-content .subtitle {
+font-size: 1.5em; margin-bottom: 30px; color: #4ecdc4; min-height: 30px;
+}
+.hero-content p {
+font-size: 1.2em; margin-bottom: 40px; opacity: 0;
+animation: fadeInUp 1s ease 0.6s forwards;
+}
+.cta-button {
+display: inline-block; padding: 15px 40px;
+background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+color: white; text-decoration: none; border-radius: 50px;
+font-size: 1.1em; font-weight: bold;
+transition: all 0.3s ease; opacity: 0;
+animation: fadeInUp 1s ease 0.9s forwards;
+}
+.cta-button:hover { transform: translateY(-3px); box-shadow: 0 15px 35px rgba(255, 107, 107, 0.4); }
+
+@keyframes fadeInUp {
+from { opacity: 0; transform: translateY(30px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* Карточки */
+.card {
+background: rgba(255, 255, 255, 0.1);
+backdrop-filter: blur(10px);
+padding: 30px;
+border-radius: 20px;
+text-align: center;
+border: 1px solid rgba(255, 255, 255, 0.2);
+opacity: 0; transform: translateY(40px);
+transition: all 0.6s ease;
+margin: 20px 0;
+height: auto; /* Автоматическая высота */
+overflow: hidden; /* Предотвращает обрезание содержимого */
+cursor: pointer;
+}
+.card.show { opacity: 1; transform: translateY(0); }
+.card:hover {
+transform: translateY(-5px);
+box-shadow: 0 10px 20px rgba(78, 205, 196, 0.3);
+}
+.card .card-content {
+font-size: 1.2em;
+height: auto; /* Адаптация под текст */
+display: block; /* Всегда видно на главной странице */
+}
+.card .card-image {
+max-width: 100%;
+border-radius: 10px;
+margin-top: 15px;
+display: none; /* Изображение скрыто, будет в модальном окне */
+height: auto; /* Адаптация под размер изображения */
+}
+
+/* Модальное окно */
+.modal {
+display: none;
+position: fixed;
+z-index: 1001;
+left: 0;
+top: 0;
+width: 100%;
+height: 100%;
+overflow-y: auto; /* Прокрутка для модального окна */
+background-color: rgba(0, 0, 0, 0.8);
+justify-content: center;
+align-items: center; /* Центрируем модальное окно */
+padding: 20px 0;
+}
+.modal-content {
+background: rgba(255, 255, 255, 0.1);
+backdrop-filter: blur(10px);
+padding: 40px;
+border-radius: 20px;
+text-align: center;
+max-width: 90%;
+width: 500px; /* Фиксированная ширина для контроля размера */
+height: auto; /* Адаптация под контент */
+overflow-y: auto; /* Прокрутка внутри модального окна */
+}
+.modal-content h3 {
+font-size: 2em;
+margin-bottom: 20px;
+}
+.modal-content p {
+font-size: 1.2em;
+margin-bottom: 20px;
+}
+.modal-content img {
+max-width: 100%;
+height: auto; /* Адаптация под размер изображения */
+margin-bottom: 20px;
+}
+.close {
+position: absolute;
+top: 10px;
+right: 20px;
+color: #fff;
+font-size: 2em;
+cursor: pointer;
+transition: color 0.3s ease;
+}
+.close:hover {
+color: #ff6b6b;
+}
+
+@keyframes fadeInModal {
+from { opacity: 0; transform: scale(0.9); }
+to { opacity: 1; transform: scale(1); }
+}
+
+/* Секции */
+section {
+width: 100%;
+min-height: 100vh; /* Минимальная высота экрана */
+padding: 100px 20px 50px; /* Отступы сверху, по бокам и снизу */
+overflow-y: auto; /* Прокрутка, если контент выходит за пределы */
+position: relative; /* Для позиционирования внутри секции */
+}
+
+.section-title {
+opacity: 0;
+transform: translateY(20px);
+transition: all 0.6s ease;
+text-align: center;
+margin-bottom: 20px;
+}
+.section-title.show {
+opacity: 1;
+transform: translateY(0);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+nav .container { padding: 0 10px; }
+.nav-links {
+position: absolute; top: 70px; right: 0;
+flex-direction: column; background: rgba(0,0,0,0.95);
+width: 200px; padding: 20px; display: none;
+}
+.nav-links.active { display: flex; }
+.burger { display: flex; }
+section {
+padding: 80px 10px 30px;
+}
+.modal-content {
+max-width: 95%;
+width: auto; /* Адаптивная ширина на маленьких экранах */
+padding: 20px;
+}
+}
+
+/* Скрытая ссылка для доступности */
+.skip-link {
+position: absolute;
+top: -40px;
+left: 0;
+background: #fff;
+color: #000;
+padding: 8px;
+z-index: 1000;
+}
+.skip-link:focus {
+top: 0;
+}
+</style>
+</head>
+<body>
+<div class="bg-animated"></div>
+<div id="sparkles"></div>
+
+<a href="#home" class="skip-link">Перейти к содержимому</a>
+
+<nav>
+<div class="container">
+<div class="logo">George Karin</div>
+<ul class="nav-links">
+<li><a href="#home">Главная</a></li>
+<li><a href="#about">О творчестве</a></li>
+<li><a href="#projects">Проекты</a></li>
+<li><a href="#goals">Цели</a></li>
+<li><a href="#contact">Контакты</a></li>
+</ul>
+<div class="burger" id="burger" aria-label="Toggle navigation" aria-expanded="false">
+<div></div><div></div><div></div>
+</div>
+</div>
+</nav>
+
+<section id="home" class="hero">
+<div class="hero-content">
+<h1>George Karin</h1>
+<div class="subtitle" id="typing"></div>
+<p>Музыка • Творчество • Будущее в кино</p>
+<a href="#about" class="cta-button">Узнать больше</a>
+</div>
+</section>
+
+<section id="about" class="container">
+<h2 class="section-title">О творчестве</h2>
+<div class="card" data-title="Музыкальное творчество" data-description="Создание уникальных музыкальных композиций, вдохновленных современными трендами и классическими мотивами." data-image="path/to/music-image.jpg">
+<div class="card-content">🎵 Музыкальное творчество</div>
+</div>
+<div class="card" data-title="Художественное видение" data-description="Разработка визуальных концепций для проектов в области искусства и дизайна." data-image="path/to/art-image.jpg">
+<div class="card-content">🎨 Художественное видение</div>
+</div>
+<div class="card" data-title="Стремление к совершенству" data-description="Постоянное развитие навыков и поиск новых идей для достижения идеальных результатов." data-image="path/to/perfection-image.jpg">
+<div class="card-content">⭐ Стремление к совершенству</div>
+</div>
+</section>
+
+<section id="projects" class="container">
+<h2 class="section-title">Проекты</h2>
+<div class="card" data-title="Wednesday" data-description="Проект, посвященный новому сезону сериала Wednesday. Сезон под названием 'The Broken Clock' состоит из 8 серий, которые длятся по 40-50 минут. Дата выхода всех серий состоится 3 октября." data-image="images/Wednesday.jpg">
+<div class="card-content">📅 Wednesday</div>
+</div>
+<div class="card" data-title="Альбом SEEME" data-description="Музыкальный альбом с оригинальными треками." data-image="path/to/seeme-image.jpg">
+<div class="card-content">💿 Альбом SEEME</div>
+</div>
+</section>
+
+<section id="goals" class="container">
+<h2 class="section-title">Цели</h2>
+<div class="card" data-title="Голливуд ждет!" data-description="Стремление к участию в голливудских проектах и создании кино." data-image="path/to/hollywood-image.jpg">
+<div class="card-content">🎬 Голливуд ждет!</div>
+</div>
+</section>
+
+<section id="contact" class="container">
+<h2 class="section-title">Контакты</h2>
+<div class="card" data-title="Email" data-description="Свяжитесь по email: egorivanghhjjnbvffdd@gmail.com" data-image="path/to/email-image.jpg">
+<div class="card-content">📧 Email</div>
+</div>
+<div class="card" data-title="Соцсети" data-description="Instagram: @georgekarin_ | Telegram: @egorchikorGK" data-image="path/to/social-image.jpg">
+<div class="card-content">📱 Соцсети</div>
+</div>
+<div class="card" data-title="Музыкальные платформы" data-description="Доступны на Spotify, Apple Music и других." data-image="path/to/music-platforms-image.jpg">
+<div class="card-content">🎵 Музыкальные платформы</div>
+</div>
+<div class="card" data-title="Сотрудничество" data-description="Открыт для совместных проектов и коллабораций." data-image="path/to/collaboration-image.jpg">
+<div class="card-content">💼 Сотрудничество</div>
+</div>
+</section>
+
+<!-- Модальное окно -->
+<div id="modal" class="modal">
+<div class="modal-content">
+<span class="close">&times;</span>
+<h3 id="modal-title"></h3>
+<p id="modal-description"></p>
+<img id="modal-image" src="" alt="Фото проекта">
+</div>
+</div>
+
+<footer class="container">
+<p>&copy; 2025 George Karin. Все права защищены.</p>
+</footer>
+
+<script>
+// Бургер-меню
+const burger = document.getElementById('burger');
+const navLinks = document.querySelector('.nav-links');
+burger.addEventListener('click', () => {
+const isActive = navLinks.classList.toggle('active');
+burger.setAttribute('aria-expanded', isActive);
+});
+
+// Закрытие меню при клике на ссылку
+document.querySelectorAll('.nav-links a').forEach(link => {
+link.addEventListener('click', (e) => {
+e.preventDefault();
+navLinks.classList.remove('active');
+burger.setAttribute('aria-expanded', 'false');
+const targetId = link.getAttribute('href').substring(1);
+document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
+});
+});
+
+// Typing effect
+const typingElement = document.getElementById('typing');
+const text = "Творчество без границ";
+let index = 0;
+function type() {
+if (index < text.length) {
+typingElement.textContent += text.charAt(index);
+index++;
+setTimeout(type, 100);
+}
+}
+window.onload = type;
+
+// Анимация карточек и заголовков при скролле
+const cards = document.querySelectorAll('.card');
+const titles = document.querySelectorAll('.section-title');
+function showTitlesAndCards() {
+titles.forEach(title => {
+const rect = title.getBoundingClientRect();
+if (rect.top < window.innerHeight - 100) {
+title.classList.add('show');
+}
+});
+cards.forEach(card => {
+const rect = card.getBoundingClientRect();
+if (rect.top < window.innerHeight - 100) {
+card.classList.add('show');
+}
+});
+}
+window.addEventListener('scroll', showTitlesAndCards);
+window.addEventListener('load', showTitlesAndCards);
+
+// Sparkles
+let sparkleCount = 0;
+const maxSparkles = 20;
+function createSparkle() {
+if (sparkleCount >= maxSparkles) return;
+sparkleCount++;
+const sparkle = document.createElement("div");
+sparkle.classList.add("sparkle");
+const size = Math.random() * 5 + 3;
+sparkle.style.width = size + "px";
+sparkle.style.height = size + "px";
+sparkle.style.left = Math.random() * window.innerWidth + "px";
+sparkle.style.animationDuration = (Math.random() * 10 + 10) + "s";
+document.getElementById("sparkles").appendChild(sparkle);
+setTimeout(() => {
+sparkle.remove();
+sparkleCount--;
+}, 20000);
+}
+setInterval(createSparkle, 600);
+
+// Модальное окно
+const modal = document.getElementById('modal');
+const modalTitle = document.getElementById('modal-title');
+const modalDescription = document.getElementById('modal-description');
+const modalImage = document.getElementById('modal-image');
+const closeBtn = document.querySelector('.close');
+
+cards.forEach(card => {
+card.addEventListener('click', () => {
+modalTitle.textContent = card.getAttribute('data-title');
+modalDescription.textContent = card.getAttribute('data-description');
+const imageSrc = card.getAttribute('data-image');
+if (imageSrc && imageSrc !== 'path/to/image.jpg') { // Показывать фото только если путь реальный
+modalImage.src = imageSrc;
+modalImage.style.display = 'block';
+} else {
+modalImage.style.display = 'none';
+}
+modal.style.display = 'flex';
+modal.classList.add('fadeInModal');
+});
+});
+
+closeBtn.addEventListener('click', () => {
+modal.style.display = 'none';
+modal.classList.remove('fadeInModal');
+});
+
+window.addEventListener('click', (e) => {
+if (e.target === modal) {
+modal.style.display = 'none';
+modal.classList.remove('fadeInModal');
+}
+});
+
+// Автоматическая адаптация размера карточек и изображений (для модального окна)
+function adjustModalContent() {
+const modalImg = document.getElementById('modal-image');
+if (modalImg.src && modalImg.style.display !== 'none') {
+modalImg.style.maxHeight = '70vh'; // Ограничение высоты изображения
+}
+}
+window.addEventListener('load', adjustModalContent);
+window.addEventListener('resize', adjustModalContent);
+</script>
+</body>
+</html>
